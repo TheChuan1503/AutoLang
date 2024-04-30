@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoLang</title>
+    <script src="al.js"></script>
+    <style>
+    </style>
+</head>
+<body>
+    <h1>AutoLang - v1.0.0</h1>
+    <h2 al="title"></h2>
+    <pre>
+&lt;h2 al="title">&lt;/h2>
+    </pre>
+    <p al="contents"></p>
+    <pre>
+&lt;p al="contents">&lt;/p>
+    </pre>
+    <div al="box1"></div>
+    <pre>
+&lt;div al="box1">&lt;/div>
+    </pre>
+    <h2 al="change lang"></h2>
+    <textarea id="inp" rows="1" cols="30" al="input lang"></textarea>
+    <button onclick="al.load(inp.value)" al="change"></button>
+    <h2 al="mtu"></h2>
+    在&lt;head>标签中填入<pre>&lt;script src="http://static.1503.eu.org/1503dev/autolang/1.0.0/al.min.js">&lt;/script></pre><br>
+    在所有标签之后，&lt;/body>标签之前填入
+    <pre>
+&lt;script>
+    al.setLangProp(语言配置对象)
+    al.load(语言，默认为系统语言)
+&lt;/script>
+    </pre>
+    或
+    <pre>
+&lt;script>
+    al.ajax("语言配置文件地址(同域)",function(r){
+        al.setLangProp(JSON.parse(r))
+        al.load(语言，默认为系统语言)
+    })
+&lt;/script>
+    </pre>
+    <br>
+    在需要国际化的标签添加属性al="键"<br>
+    在语言配置中填入键对应的文字
+    <pre>
+&lt;span al="title">&lt;/sapn>
+    </pre>
+    <h2>语言配置参考</h2>
+    配置文件:<a href="test.json">test.json</a>
+    
+    <script>
+        al.ajax("test.json",function(r){
+            al.setLangProp(JSON.parse(r))
+            al.load()
+        })
+    </script>
+</body>
+</html>
