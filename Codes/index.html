@@ -6,56 +6,61 @@
     <title>AutoLang</title>
     <script src="al.js"></script>
     <style>
+        pre{
+            border-left:2px #ccc solid;
+            padding:2px;
+        }
     </style>
 </head>
 <body>
-    <h1>AutoLang - v1.0.0</h1>
-    <h2 al="title"></h2>
+    <h1>AutoLang - v1.0.1</h1>
+    <h2 al="title">title</h2>
     <pre>
-&lt;h2 al="title">&lt;/h2>
-    </pre>
-    <p al="contents"></p>
+&lt;h2 al="title">title&lt;/h2></pre>
+    <p al="contents">contents</p>
     <pre>
-&lt;p al="contents">&lt;/p>
-    </pre>
-    <div al="box1"></div>
+&lt;p al="contents">contents&lt;/p></pre>
+    <div al="box1">box1</div>
     <pre>
-&lt;div al="box1">&lt;/div>
-    </pre>
-    <h2 al="change lang"></h2>
-    <textarea id="inp" rows="1" cols="30" al="input lang"></textarea>
-    <button onclick="al.load(inp.value)" al="change"></button>
-    <h2 al="mtu"></h2>
-    在&lt;head>标签中填入<pre>&lt;script src="http://static.1503.eu.org/1503dev/autolang/1.0.0/al.min.js">&lt;/script></pre><br>
-    在所有标签之后，&lt;/body>标签之前填入
-    <pre>
+&lt;div al="box1">box1&lt;/div></pre>
+    <h2 al="change lang">change lang</h2>
+    <textarea id="inp" rows="1" cols="30" al="input lang" placeholder="zh-CN,zh-TW,en">input lang</textarea>
+    <button onclick="al.load(inp.value)" al="change">change</button>
+    <h2 al="mtu">mtu</h2>
+    在&lt;head>标签中填入<pre>&lt;script src="al.min.js">&lt;/script></pre><br>
+    在所有标签之后，&lt;/body>标签之前填入<pre>
 &lt;script>
-    al.setLangProp(语言配置对象)
-    al.load(语言，默认为系统语言)
-&lt;/script>
-    </pre>
+    al.setLangProp(语言配置对象或JSON字符串)
+    al.load(语言,国际化方式,回调函数,延迟)
+&lt;/script></pre>
     或
     <pre>
 &lt;script>
     al.ajax("语言配置文件地址(同域)",function(r){
         al.setLangProp(JSON.parse(r))
-        al.load(语言，默认为系统语言)
+        al.load(语言,国际化方式,回调函数,延迟)
     })
-&lt;/script>
-    </pre>
-    <br>
+&lt;/script></pre>
+    参数:
+    <pre>
+语言:默认为系统语言
+国际化方式:
+    al.mode.HTML(默认):直接修改内部HTML
+    al.mode.TEXT:直接修改内部文字(覆盖子元素)
+    al.mode.REPLACE:替换元素内文字(推荐)，无需指定元素属性al的值，在元素内填入键即可
+回调函数:国际化完成后执行该函数(无参数)
+延迟:延迟时间后执行国际化(单位ms)</pre>
     在需要国际化的标签添加属性al="键"<br>
     在语言配置中填入键对应的文字
     <pre>
-&lt;span al="title">&lt;/sapn>
-    </pre>
-    <h2>语言配置参考</h2>
+&lt;span al="title">&lt;/sapn></pre>
+    <h2 al="refer">refer</h2>
     配置文件:<a href="test.json">test.json</a>
     
     <script>
         al.ajax("test.json",function(r){
             al.setLangProp(JSON.parse(r))
-            al.load()
+            al.load(null,al.mode.REPLACE)
         })
     </script>
 </body>
