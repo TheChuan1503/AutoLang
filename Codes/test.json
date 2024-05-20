@@ -29,5 +29,9 @@
         "mtu":"使用方式",
         "refer":"語言配置參考"
     },
-    "default":"zh-CN"
+    "default":"zh-CN",
+    "default_country":{
+        "en":"en",
+        "zh":"zh-CN"
+    }
 }

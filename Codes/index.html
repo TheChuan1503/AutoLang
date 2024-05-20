@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AutoLang</title>
-    <script src="al.js"></script>
+    <script src="al.min.js"></script>
     <style>
         pre{
             border-left:2px #ccc solid;
@@ -13,7 +13,7 @@
     </style>
 </head>
 <body>
-    <h1>AutoLang - v1.0.1</h1>
+    <h1>AutoLang - v1.1.0</h1>
     <h2 al="title">title</h2>
     <pre>
 &lt;h2 al="title">title&lt;/h2></pre>
@@ -36,7 +36,7 @@
     或
     <pre>
 &lt;script>
-    al.ajax("语言配置文件地址(同域)",function(r){
+    al.httpGet("语言配置文件地址(同域)",function(r){
         al.setLangProp(JSON.parse(r))
         al.load(语言,国际化方式,回调函数,延迟)
     })
@@ -58,9 +58,9 @@
     配置文件:<a href="test.json">test.json</a>
     
     <script>
-        al.ajax("test.json",function(r){
+        al.httpGet("test.json",function(r){
             al.setLangProp(JSON.parse(r))
-            al.load(null,al.mode.REPLACE)
+            al.load(undefined,al.mode.REPLACE)
         })
     </script>
 </body>
