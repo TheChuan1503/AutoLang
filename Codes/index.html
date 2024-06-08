@@ -13,7 +13,7 @@
     </style>
 </head>
 <body>
-    <h1>AutoLang - v1.3.0</h1>
+    <h1>AutoLang - v1.3.1</h1>
     <h2 al="title">title</h2>
     <h2 al="change lang">change lang</h2>
     <textarea id="inp" rows="1" cols="30" al="input lang" placeholder="zh-CN,zh-TW,en">input lang</textarea>
@@ -23,14 +23,14 @@
     在所有标签之后，&lt;/body>标签之前填入<pre>
 &lt;script>
     al.setLangProp(语言配置对象 | JSON字符串 | 语言配置数组(详情<a href="array.html">此处</a>))
-    al.load(语言,国际化方式,回调函数,延迟)
+    al.load(语言,国际化方式,回调函数)
 &lt;/script></pre>
     或
     <pre>
 &lt;script>
     al.httpGet("语言配置文件地址(同域)",function(r){
         al.setLangProp(r)
-        al.load(语言,国际化方式,回调函数,延迟)
+        al.load(语言,国际化方式,回调函数)
     })
 &lt;/script></pre>
 <hr>
@@ -42,7 +42,7 @@ al.setDefaultCountry({
 <pre>
 al.setDefault("zh-CN")</pre>
 <hr>
-    参数:
+    al.load()参数:
     <pre>
 语言:默认为系统语言
 国际化方式:
@@ -53,13 +53,23 @@ al.setDefault("zh-CN")</pre>
     al.mode.REPLACE:
         替换元素内文字，作用有al属性元素，在元素内填入键，无法动态更改语言
 回调函数:
-    国际化完成后执行该函数(无参数)
-延迟:
-    延迟时间后执行国际化(单位ms)</pre>
+    国际化完成后执行该函数(无参数)</pre>
+<hr>
+    al.setLangProp()参数:
+    <pre>
+obj:
+    配置对象 | url | 配置数组 | 字符串(json/yaml)
+callback:
+    加载配置后的回调函数，返回配置对象/数组
+attr:
+    {
+        url:是否为url,
+        yaml:是否为yaml
+    }</pre>
     在需要国际化的标签添加属性al="键"(al.mode.REPLACE无需键)<br>
     在语言配置中填入键对应的文字
     <pre>
-&lt;span al="title">&lt;/sapn></pre>
+&lt;span al="title">&lt;/span></pre>
     <h2 al="refer">refer</h2>
     配置文件:<a href="test.json">test.json</a> <a href="test.yaml">test.yaml</a>
     
@@ -68,6 +78,7 @@ al.setDefault("zh-CN")</pre>
             al.setLangProp(r,undefined,{yaml:true})
             al.load(undefined,al.mode.REPLACE)
         })
+        console.log(al.ver)
     </script>
 </body>
 </html>

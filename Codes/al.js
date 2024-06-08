@@ -92,10 +92,10 @@ const al = {
             if(isYaml){
                 al._p.push(jsyaml.load(r))
             } else al._p.push(JSON.parse(r))
-            al._(arr, i + 1, cb)
+            al._(arr, i + 1, cb, isYaml)
         })
     },
-    ver: [6, "1.3.0"],
+    ver: [7, "1.3.1"],
     mode: {
         HTML: 0,
         TEXT: 1,
