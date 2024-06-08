@@ -13,7 +13,7 @@
     </style>
 </head>
 <body>
-    <h1>AutoLang - v1.1.0</h1>
+    <h1>AutoLang - v1.2.0</h1>
     <h2 al="title">title</h2>
     <pre>
 &lt;h2 al="title">title&lt;/h2></pre>
@@ -30,27 +30,41 @@
     在&lt;head>标签中填入<pre>&lt;script src="al.min.js">&lt;/script></pre><br>
     在所有标签之后，&lt;/body>标签之前填入<pre>
 &lt;script>
-    al.setLangProp(语言配置对象或JSON字符串)
+    al.setLangProp(语言配置对象 | JSON字符串 | 语言配置数组(详情<a href="array.html">此处</a>))
     al.load(语言,国际化方式,回调函数,延迟)
 &lt;/script></pre>
     或
     <pre>
 &lt;script>
     al.httpGet("语言配置文件地址(同域)",function(r){
-        al.setLangProp(JSON.parse(r))
+        al.setLangProp(r)
         al.load(语言,国际化方式,回调函数,延迟)
     })
 &lt;/script></pre>
+<hr>
+<pre>
+al.setDefaultCountry({
+    zh:"zh-CN",
+    en:"en-US"
+})</pre>
+<pre>
+al.setDefault("zh-CN")</pre>
+<hr>
     参数:
     <pre>
 语言:默认为系统语言
 国际化方式:
-    al.mode.HTML(默认):直接修改内部HTML
-    al.mode.TEXT:直接修改内部文字(覆盖子元素)
-    al.mode.REPLACE:替换元素内文字(推荐)，无需指定元素属性al的值，在元素内填入键即可
-回调函数:国际化完成后执行该函数(无参数)
-延迟:延迟时间后执行国际化(单位ms)</pre>
-    在需要国际化的标签添加属性al="键"<br>
+    al.mode.HTML(默认):
+        直接修改内部HTML
+    al.mode.TEXT:
+        直接修改内部文字(覆盖子元素)
+    al.mode.REPLACE:
+        替换元素内文字，作用有al属性元素，在元素内填入键，无法动态更改语言
+回调函数:
+    国际化完成后执行该函数(无参数)
+延迟:
+    延迟时间后执行国际化(单位ms)</pre>
+    在需要国际化的标签添加属性al="键"(al.mode.REPLACE无需键)<br>
     在语言配置中填入键对应的文字
     <pre>
 &lt;span al="title">&lt;/sapn></pre>
@@ -59,7 +73,7 @@
     
     <script>
         al.httpGet("test.json",function(r){
-            al.setLangProp(JSON.parse(r))
+            al.setLangProp(r)
             al.load(undefined,al.mode.REPLACE)
         })
     </script>

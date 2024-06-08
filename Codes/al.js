@@ -1,7 +1,6 @@
 const al = {
     load: function(l = navigator.language, mode = this.mode.HTML, callback, wait = 0) {
         setTimeout(function() {
-
             if (Object.keys(al.lang).indexOf(l) === -1) {
                 if (l == "default") {
                     l = al.lang.default
@@ -9,8 +8,10 @@ const al = {
                     if (l.indexOf("-") != -1) {
                         var c = l.split("-")[0]
                     } else var c = l
-                    if (Object.keys(al.lang.default_country).indexOf(c) != -1) {
-                        l = al.lang.default_country[c]
+                    if (al.lang.default_country != undefined) {
+                        if (Object.keys(al.lang.default_country).indexOf(c) != -1) {
+                            l = al.lang.default_country[c]
+                        } else l = al.lang.default
                     } else l = al.lang.default
                 }
             }
@@ -41,9 +42,34 @@ const al = {
             }
         }, wait)
     },
-    setLangProp: function(obj) {
-        if ((typeof obj) == "object") this.lang = obj
-        else this.lang = JSON.parse(obj)
+    setLangProp: function(obj, cb = function(r) {}, url) {
+        if (obj instanceof Array) {
+            if (url === true) {
+                this._(obj, 0, function(r) {
+                    al.setLangProp(r, cb, false)
+                })
+            } else {
+                obj.forEach(function(e) {
+                    al.lang[e.language] = e.data
+                })
+                cb(this.lang)
+            }
+        } else if ((typeof obj) == "object") {
+            //alert(obj)
+            if (obj.default === undefined) {
+                obj.default = this.lang.default
+            }
+            this.lang = obj
+            cb(this.lang)
+        } else {
+            this.setLangProp(JSON.parse(obj), cb, url)
+        }
+    },
+    setDefault: function(def) {
+        this.lang["default"] = def
+    },
+    setDefaultCountry: function(def) {
+        this.lang["default_country"] = def
     },
     httpGet: function(url, callback) {
         var xhttp = new XMLHttpRequest()
@@ -55,12 +81,26 @@ const al = {
         xhttp.open("GET", url, true)
         xhttp.send()
     },
-    ver: [3, "1.1.0"],
+    _p: [],
+    _: function(arr, i, cb) {
+        //alert(JSON.stringify(al._p))
+        if (i >= arr.length) {
+            cb(this._p)
+            return
+        }
+        this.httpGet(arr[i], function(r) {
+            al._p.push(JSON.parse(r))
+            al._(arr, i + 1, cb)
+        })
+    },
+    ver: [4, "1.1.1"],
     mode: {
         HTML: 0,
         TEXT: 1,
         TEXT_ALL: 2,
         REPLACE: 3
     },
-    lang: {}
+    lang: {
+        default: "zh-CN"
+    }
 }
