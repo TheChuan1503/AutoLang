@@ -15,6 +15,12 @@ const al = {
                 }
             }
             var text = Object.keys(al.lang[l])
+            for (var i = 0; i < text.length; i++) {
+                var p = al.lang[l][text[i]]
+                al.lang[l][text[i]] = p.replace(/\$\{(.*?)}/g, function(m, n) {
+                    return eval(n)
+                })
+            }
             if (mode === al.mode.REPLACE) {
                 for (var i = 0; i < text.length; i++) {
                     document.querySelectorAll('[al]').forEach(function(e) {
@@ -95,7 +101,7 @@ const al = {
             al._(arr, i + 1, cb, isYaml)
         })
     },
-    ver: [7, "1.3.1"],
+    ver: [8, "1.3.2"],
     mode: {
         HTML: 0,
         TEXT: 1,
