@@ -13,16 +13,8 @@
     </style>
 </head>
 <body>
-    <h1>AutoLang - v1.2.1</h1>
+    <h1>AutoLang - v1.3.0</h1>
     <h2 al="title">title</h2>
-    <pre>
-&lt;h2 al="title">title&lt;/h2></pre>
-    <p al="contents">contents</p>
-    <pre>
-&lt;p al="contents">contents&lt;/p></pre>
-    <div al="box1">box1</div>
-    <pre>
-&lt;div al="box1">box1&lt;/div></pre>
     <h2 al="change lang">change lang</h2>
     <textarea id="inp" rows="1" cols="30" al="input lang" placeholder="zh-CN,zh-TW,en">input lang</textarea>
     <button onclick="al.load(inp.value)" al="change">change</button>
@@ -69,11 +61,11 @@ al.setDefault("zh-CN")</pre>
     <pre>
 &lt;span al="title">&lt;/sapn></pre>
     <h2 al="refer">refer</h2>
-    配置文件:<a href="test.json">test.json</a>
+    配置文件:<a href="test.json">test.json</a> <a href="test.yaml">test.yaml</a>
     
     <script>
-        al.httpGet("test.json",function(r){
-            al.setLangProp(r)
+        al.httpGet("test.yaml",function(r){
+            al.setLangProp(r,undefined,{yaml:true})
             al.load(undefined,al.mode.REPLACE)
         })
     </script>
