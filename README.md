@@ -1,2 +1,4 @@
 # AutoLang
-Web Internationalization JS Lib
+Web i18n JS Lib
+
+_Lightweight :)_
