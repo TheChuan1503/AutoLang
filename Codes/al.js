@@ -1,5 +1,5 @@
 const al = {
-    load: function(l = navigator.language, mode = this.mode.HTML, callback, wait = 0) {
+    load: function(l = navigator.language, mode = this.mode.HTML, callback = function() {}, wait = 0) {
         setTimeout(function() {
             if (Object.keys(al.lang).indexOf(l) === -1) {
                 if (l == "default") {
@@ -40,6 +40,7 @@ const al = {
                     }
                 })
             }
+            callback()
         }, wait)
     },
     setLangProp: function(obj, cb = function(r) {}, url) {
@@ -47,6 +48,7 @@ const al = {
             if (url === true) {
                 this._(obj, 0, function(r) {
                     al.setLangProp(r, cb, false)
+                    this._p = []
                 })
             } else {
                 obj.forEach(function(e) {
@@ -55,7 +57,6 @@ const al = {
                 cb(this.lang)
             }
         } else if ((typeof obj) == "object") {
-            //alert(obj)
             if (obj.default === undefined) {
                 obj.default = this.lang.default
             }
@@ -71,7 +72,7 @@ const al = {
     setDefaultCountry: function(def) {
         this.lang["default_country"] = def
     },
-    httpGet: function(url, callback) {
+    httpGet: function(url, callback = function(r) {}) {
         var xhttp = new XMLHttpRequest()
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4) {
@@ -83,7 +84,6 @@ const al = {
     },
     _p: [],
     _: function(arr, i, cb) {
-        //alert(JSON.stringify(al._p))
         if (i >= arr.length) {
             cb(this._p)
             return
@@ -93,7 +93,7 @@ const al = {
             al._(arr, i + 1, cb)
         })
     },
-    ver: [4, "1.1.1"],
+    ver: [5, "1.2.1"],
     mode: {
         HTML: 0,
         TEXT: 1,
