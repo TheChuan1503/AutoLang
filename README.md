@@ -3,7 +3,9 @@ Web i18n JS Lib
 
 _Lightweight_
 
- 
+## How to use
+- See **DOCS**
+
 ## Third-party Lib
    
 - [js-yaml](https://github.com/nodeca/js-yaml) 4.1.0
