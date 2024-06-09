@@ -17,8 +17,12 @@ const al = {
             var text = Object.keys(al.lang[l])
             for (var i = 0; i < text.length; i++) {
                 var p = al.lang[l][text[i]]
-                al.lang[l][text[i]] = p.replace(/\$\{(.*?)}/g, function(m, n) {
-                    return eval(n)
+                al.lang[l][text[i]] = p.replace(/(?<!\\)((?:\\\\)*)\$\{([^}]*)}/g, function(a, s, n) {
+                    return s + String(eval(n))
+                }).replace(/(?<!\\)((?:\\\\)*)\{([^}]*)}/g, function(a, s, n) {
+                    return s + al.lang[l][n]
+                }).replace(/\\((?:\\\\)*)(\{[^}]*})/g, function(a, s, n) {
+                    return s + n
                 })
             }
             if (mode === al.mode.REPLACE) {
@@ -101,7 +105,7 @@ const al = {
             al._(arr, i + 1, cb, isYaml)
         })
     },
-    ver: [8, "1.3.2"],
+    ver: [9, "1.3.3"],
     mode: {
         HTML: 0,
         TEXT: 1,
