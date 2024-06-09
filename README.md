@@ -11,5 +11,5 @@ _Lightweight_
 
 ## Thanks
 
-- [Github@teaSummer](/teaSummer/)
+- [Github@teaSummer](https://github.com/teaSummer/)
 - [1503Dev](https://1503dev.top?from=AutoLang)
