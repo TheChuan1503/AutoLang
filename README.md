@@ -8,3 +8,8 @@ _Lightweight_
    
 - [js-yaml](https://github.com/nodeca/js-yaml) 4.1.0
   LICENSE MIT
+
+## Thanks
+
+- [Github@teaSummer](/teaSummer/)
+- [1503Dev](https://1503dev.top?from=AutoLang)
