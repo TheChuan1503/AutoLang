@@ -1,67 +1,69 @@
 const al = {
     load: function(l = navigator.language, mode = this.mode.HTML, callback = function() {}) {
-            if (Object.keys(al.lang).indexOf(l) === -1) {
-                if (l == "default") {
-                    l = al.lang.default
-                } else {
-                    if (l.indexOf("-") != -1) {
-                        var c = l.split("-")[0]
-                    } else var c = l
-                    if (al.lang.default_country != undefined) {
-                        if (Object.keys(al.lang.default_country).indexOf(c) != -1) {
-                            l = al.lang.default_country[c]
-                        } else l = al.lang.default
+        if (Object.keys(al.lang).indexOf(l) === -1) {
+            if (l == "default") {
+                l = al.lang.default
+            } else {
+                if (l.indexOf("-") != -1) {
+                    var c = l.split("-")[0]
+                } else var c = l
+                if (al.lang.default_country != undefined) {
+                    if (Object.keys(al.lang.default_country).indexOf(c) != -1) {
+                        l = al.lang.default_country[c]
                     } else l = al.lang.default
-                }
+                } else l = al.lang.default
             }
-            var text = Object.keys(al.lang[l])
+        }
+        var text = Object.keys(al.lang[l])
+        for (var i = 0; i < text.length; i++) {
+            var p = al.lang[l][text[i]]
+            al.lang[l][text[i]] = p.replace(/(?<!\\)((?:\\\\)*)\$\{([^}]*)}/g, function(a, s, n) {
+                return s + String(eval(n))
+            }).replace(/(?<!\\)((?:\\\\)*)\{([^}]*)}/g, function(a, s, n) {
+                return s + al.lang[l][n]
+            }).replace(/\\((?:\\\\)*)(\{[^}]*})/g, function(a, s, n) {
+                return s + n
+            })
+        }
+        if (mode === al.mode.REPLACE) {
             for (var i = 0; i < text.length; i++) {
-                var p = al.lang[l][text[i]]
-                al.lang[l][text[i]] = p.replace(/(?<!\\)((?:\\\\)*)\$\{([^}]*)}/g, function(a, s, n) {
-                    return s + String(eval(n))
-                }).replace(/(?<!\\)((?:\\\\)*)\{([^}]*)}/g, function(a, s, n) {
-                    return s + al.lang[l][n]
-                }).replace(/\\((?:\\\\)*)(\{[^}]*})/g, function(a, s, n) {
-                    return s + n
-                })
-            }
-            if (mode === al.mode.REPLACE) {
-                for (var i = 0; i < text.length; i++) {
-                    document.querySelectorAll('[al]').forEach(function(e) {
-                        let z = new RegExp(text[i], "gi")
-                        e.innerHTML = e.innerHTML.replace(z, al.lang[l][text[i]])
-                    })
-                }
-                callback()
-                return
-            }
-            for (var i = 0; i < text.length; i++) {
-                document.querySelectorAll('[al="' + text[i] + '"]').forEach(function(e) {
-                    switch (mode) {
-                        case al.mode.HTML:
-                            e.innerHTML = al.lang[l][text[i]]
-                            break
-                        case al.mode.TEXT:
-                            e.innerText = al.lang[l][text[i]]
-                            break
-                        default:
-                            e.innerHTML = al.lang[l][text[i]]
-                    }
+                document.querySelectorAll('[al]').forEach(function(e) {
+                    let z = new RegExp(text[i], "gi")
+                    e.innerHTML = e.innerHTML.replace(z, al.lang[l][text[i]])
                 })
             }
             callback()
+            return
+        }
+        for (var i = 0; i < text.length; i++) {
+            document.querySelectorAll('[al="' + text[i] + '"]').forEach(function(e) {
+                switch (mode) {
+                    case al.mode.HTML:
+                        e.innerHTML = al.lang[l][text[i]]
+                        break
+                    case al.mode.TEXT:
+                        e.innerText = al.lang[l][text[i]]
+                        break
+                    default:
+                        e.innerHTML = al.lang[l][text[i]]
+                }
+            })
+        }
+        callback()
     },
-    setLangProp: function(obj, cb = function(r) {}, attr = {}) {
+    setLangProp: function(obj, cb = function() {}, attr = {}) {
         if (obj instanceof Array) {
-            if (attr.url == true) {
+            if (attr.url == true && "string" === (typeof obj[0])) {
                 this._(obj, 0, function(r) {
-                    al.setLangProp(r, cb, false)
-                    this._p = []
-                },attr.url)
+                    al._l(r)
+                    al.setLangProp(r, cb, attr)
+                    al._p = []
+                }, attr.yaml)
             } else {
                 obj.forEach(function(e) {
                     al.lang[e.language] = e.data
                 })
+                al._p = []
                 cb(this.lang)
             }
         } else if ((typeof obj) == "object") {
@@ -71,9 +73,15 @@ const al = {
             this.lang = obj
             cb(this.lang)
         } else {
-            if(attr.yaml){
+            if ((attr.yaml) == true) {
                 this.setLangProp(jsyaml.load(obj), cb, attr)
-            } else this.setLangProp(JSON.parse(obj), cb, attr)
+            } else if ((attr.yaml) == false) {
+                this.setLangProp(JSON.parse(obj), cb, attr)
+            } else try {
+                this.setLangProp(jsyaml.load(obj), cb, attr)
+            } catch {
+                this.setLangProp(JSON.parse(obj), cb, attr)
+            }
         }
     },
     setDefault: function(def) {
@@ -82,7 +90,7 @@ const al = {
     setDefaultCountry: function(def) {
         this.lang["default_country"] = def
     },
-    httpGet: function(url, callback = function(r) {}) {
+    httpGet: function(url, callback = function() {}) {
         var xhttp = new XMLHttpRequest()
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4) {
@@ -94,18 +102,30 @@ const al = {
     },
     _p: [],
     _: function(arr, i, cb, isYaml) {
+        console.log(arr)
         if (i >= arr.length) {
+            this._l(this._p)
             cb(this._p)
             return
         }
+        al._l(arr[i])
         this.httpGet(arr[i], function(r) {
-            if(isYaml){
+            if (isYaml == true) {
                 al._p.push(jsyaml.load(r))
-            } else al._p.push(JSON.parse(r))
+            } else if (isYaml == false) {
+                al._p.push(JSON.parse(r))
+            } else {
+                try {
+                    al._p.push(jsyaml.load(r))
+                } catch {
+                    al._p.push(JSON.parse(r))
+                }
+            }
             al._(arr, i + 1, cb, isYaml)
         })
     },
-    ver: [9, "1.3.3"],
+    _l: console.log,
+    ver: [10, "1.3.4"],
     mode: {
         HTML: 0,
         TEXT: 1,
