@@ -4,12 +4,11 @@ Web i18n JS Lib
 _Lightweight_
 
 ## How to use
-- See **DOCS**
+- See **DOCS** on **Releases**
 
 ## Third-party Lib
    
-- [js-yaml](https://github.com/nodeca/js-yaml) 4.1.0
-  LICENSE MIT
+- [js-yaml](https://github.com/nodeca/js-yaml): 4.1.0: MIT LICENSE
 
 ## Thanks
 
