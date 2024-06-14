@@ -29,7 +29,12 @@ const al = {
             for (var i = 0; i < text.length; i++) {
                 document.querySelectorAll('[al]').forEach(function(e) {
                     let z = new RegExp(text[i], "gi")
-                    e.innerHTML = e.innerHTML.replace(z, al.lang[l][text[i]])
+                    let applyTo = e.getAttribute('al-aplto')
+                    if (applyTo !== null && applyTo !== undefined) {
+                        e.setAttribute(applyTo, e.getAttribute(applyTo).replace(z, al.lang[l][text[i]]))
+                    } else if (e.tagName.toLowerCase() == "input") {
+                        e.value = e.value.replace(z, al.lang[l][text[i]])
+                    } else e.innerHTML = e.innerHTML.replace(z, al.lang[l][text[i]])
                 })
             }
             callback()
@@ -37,15 +42,22 @@ const al = {
         }
         for (var i = 0; i < text.length; i++) {
             document.querySelectorAll('[al="' + text[i] + '"]').forEach(function(e) {
-                switch (mode) {
-                    case al.mode.HTML:
-                        e.innerHTML = al.lang[l][text[i]]
-                        break
-                    case al.mode.TEXT:
-                        e.innerText = al.lang[l][text[i]]
-                        break
-                    default:
-                        e.innerHTML = al.lang[l][text[i]]
+                let applyTo = e.getAttribute('al-aplto')
+                if (applyTo !== null && applyTo !== undefined) {
+                    e.setAttribute(applyTo, al.lang[l][text[i]])
+                } else if (e.tagName.toLowerCase() == "input") {
+                    e.value = al.lang[l][text[i]]
+                } else {
+                    switch (mode) {
+                        case al.mode.HTML:
+                            e.innerHTML = al.lang[l][text[i]]
+                            break
+                        case al.mode.TEXT:
+                            e.innerText = al.lang[l][text[i]]
+                            break
+                        default:
+                            e.innerHTML = al.lang[l][text[i]]
+                    }
                 }
             })
         }
@@ -102,13 +114,11 @@ const al = {
     },
     _p: [],
     _: function(arr, i, cb, isYaml) {
-        console.log(arr)
         if (i >= arr.length) {
             this._l(this._p)
             cb(this._p)
             return
         }
-        al._l(arr[i])
         this.httpGet(arr[i], function(r) {
             if (isYaml == true) {
                 al._p.push(jsyaml.load(r))
@@ -124,8 +134,8 @@ const al = {
             al._(arr, i + 1, cb, isYaml)
         })
     },
-    _l: console.log,
-    ver: [10, "1.3.4"],
+    _l: function() {},
+    ver: [11, "1.4.0"],
     mode: {
         HTML: 0,
         TEXT: 1,
