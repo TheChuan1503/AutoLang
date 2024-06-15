@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AutoLang</title>
     <script src="al.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <style>
         pre{
             border-left:2px #ccc solid;
@@ -67,16 +68,16 @@ attr:
         yaml:是否为yaml
     }</pre>
     在需要国际化的标签添加属性al="键"(al.mode.REPLACE无需键)<br>
+    标签属性al-aplto的值为需要国际化的属性(默认为innerHTML)<br>
     在语言配置中填入键对应的文字
     <pre>
 &lt;span al="title">&lt;/span></pre>
     <h2 al="refer">refer</h2>
     配置文件:<a href="test.json">test.json</a> <a href="test.yaml">test.yaml</a>
-    
     <script>
         al.httpGet("test.yaml",function(r){
             al.setLangProp(r,undefined,{})
-            al.load(undefined,al.mode.REPLACE)
+            al.load(undefined,al.mode.HTML,undefined)
         })
         console.log(al.ver)
     </script>

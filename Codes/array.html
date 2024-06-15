@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AutoLang</title>
     <script src="al.min.js"></script>
+    <script src="https://cdn.bootcdn.net/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
     <style>
         pre{
             border-left:2px #ccc solid;
@@ -43,7 +44,7 @@
             zh:"zh-CN",
             en:"en-US"
         })
-        al.setLangProp(["lang/zh-CN.json","lang/zh-TW.json"],function(){
+        al.setLangProp(["lang/zh-CN.json","lang/zh-TW.json","lang/en-US.json"],function(){
             al.load(undefined,al.mode.REPLACE)
         },{url:true})
     </script>
