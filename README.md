@@ -1,9 +1,12 @@
 # AutoLang
-网页国际化 js 库
+[English](README.en.md) | 简体中文
 
-_轻量_
+网页国际化 JS 库
+
+*轻量 +*
 
 ## 如何使用
+
 - 见 **Codes/index.html**
 - 必要时需要引入 **js-yaml**
 
@@ -13,5 +16,5 @@ _轻量_
 
 ## 鸣谢
 
-- [Github@teaSummer](https://github.com/teaSummer/)
+- [Github@teaSummer](https://github.com/teaSummer)
 - [1503Dev](https://1503dev.top?from=AutoLang)
