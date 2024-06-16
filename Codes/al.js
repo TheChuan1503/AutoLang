@@ -1,21 +1,21 @@
 const al = {
     load: function(l = navigator.language, mode = this.mode.HTML, callback = function() {}) {
-        if (Object.keys(al.lang).indexOf(l) === -1) {
+        if (!al.lang.hasOwnProperty(l)) {
             if (l == "default") {
                 l = al.lang.default
             } else {
                 if (l.indexOf("-") != -1) {
                     var c = l.split("-")[0]
                 } else var c = l
-                if (al.lang.default_country != undefined) {
-                    if (Object.keys(al.lang.default_country).indexOf(c) != -1) {
+                if (al.lang.default_country !== void 0) {
+                    if (al.lang.default_country.hasOwnProperty(c)) {
                         l = al.lang.default_country[c]
                     } else l = al.lang.default
                 } else l = al.lang.default
             }
         }
         var text = Object.keys(al.lang[l])
-        if (al.lang.default !== undefined) {
+        if (al.lang.default !== void 0) {
             var defaultText = Object.keys(al.lang[al.lang.default])
             if (text !== defaultText) {
                 for (let i = 0; i < defaultText.length; i++) {
@@ -28,11 +28,11 @@ const al = {
         }
         for (var i = 0; i < text.length; i++) {
             var p = al.lang[l][text[i]]
-            al.lang[l][text[i]] = p.replace(/(?<!\\)((?:\\\\)*)\$\{([^}]*)}/g, function(a, s, n) {
-                return s + String(eval(n))
-            }).replace(/(?<!\\)((?:\\\\)*)\{([^}]*)}/g, function(a, s, n) {
-                return s + al.lang[l][n.trim()]
-            }).replace(/\\((?:\\\\)*)(\{[^}]*})/g, function(a, s, n) {
+            al.lang[l][text[i]] = p.replace(/(?<!\\)((?:\\\\)*)\$\{([^}]*)}/g, function(m, s, expr) {
+                return s + Function('"use strict";return (' + expr + ')').call()
+            }).replace(/(?<!\\)((?:\\\\)*)\{([^}]*)}/g, function(m, s, key) {
+                return s + al.lang[l][key.trim()]
+            }).replace(/\\((?:\\\\)*)(\{[^}]*})/g, function(m, s, n) {
                 return s + n
             })
         }
@@ -41,7 +41,7 @@ const al = {
                 document.querySelectorAll('[al]').forEach(function(e) {
                     let z = new RegExp(text[i], "gi")
                     let applyTo = e.getAttribute('al-aplto')
-                    if (applyTo !== null && applyTo !== undefined) {
+                    if (applyTo !== null && applyTo !== void 0) {
                         e.setAttribute(applyTo, e.getAttribute(applyTo).replace(z, al.lang[l][text[i]]))
                     } else if (e.tagName.toLowerCase() == "input") {
                         e.value = e.value.replace(z, al.lang[l][text[i]])
@@ -54,7 +54,7 @@ const al = {
         for (var i = 0; i < text.length; i++) {
             document.querySelectorAll('[al="' + text[i] + '"]').forEach(function(e) {
                 let applyTo = e.getAttribute('al-aplto')
-                if (applyTo !== null && applyTo !== undefined) {
+                if (applyTo !== null && applyTo !== void 0) {
                     e.setAttribute(applyTo, al.lang[l][text[i]])
                 } else if (e.tagName.toLowerCase() == "input") {
                     e.value = al.lang[l][text[i]]
@@ -73,7 +73,7 @@ const al = {
     },
     setLangProp: function(obj, cb = function() {}, attr = {}) {
         if (obj instanceof Array) {
-            if (attr.url == true && "string" === (typeof obj[0])) {
+            if (attr.url == true && (typeof obj[0]) == "string") {
                 this._(obj, 0, function(r) {
                     al.setLangProp(r, cb, attr)
                 }, attr.yaml)
@@ -84,15 +84,15 @@ const al = {
                 cb(this.lang)
             }
         } else if ((typeof obj) == "object") {
-            if (obj.default === undefined) {
+            if (obj.default === void 0) {
                 obj.default = this.lang.default
             }
             this.lang = obj
             cb(this.lang)
         } else {
-            if ((attr.yaml) == true) {
+            if (attr.yaml == true) {
                 this.setLangProp(jsyaml.load(obj), cb, attr)
-            } else if ((attr.yaml) == false) {
+            } else if (attr.yaml == false) {
                 this.setLangProp(JSON.parse(obj), cb, attr)
             } else try {
                 this.setLangProp(jsyaml.load(obj), cb, attr)
@@ -143,7 +143,7 @@ const al = {
             al._(arr, i + 1, cb, isYaml)
         })
     },
-    ver: [12, "1.4.1"],
+    ver: [13, "1.4.2"],
     mode: {
         HTML: 0,
         TEXT: 1,
