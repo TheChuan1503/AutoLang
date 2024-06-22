@@ -7,7 +7,7 @@
 
 ## 如何使用
 
-- 见 **Codes/index.html**
+- 见 **Codes/index.html** 和Releases(更新日志)
 - 必要时需要引入 **js-yaml**
 
 ## 第三方库
