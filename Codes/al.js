@@ -1,5 +1,28 @@
 const al = {
     load: function(l = navigator.language, mode = this.mode.HTML, callback = function() {}) {
+        function getApplies(e, applyTo) {
+            applyTo = applyTo.trim()
+            let origin = applyTo.split(';')
+            origin.forEach(function(e, i) {
+                origin[i] = e.trim()
+            })
+            if (origin[origin.length - 1] === '') origin.splice(origin.length - 1, 1)
+            if (origin.length == 1 && origin[0].indexOf(':') == -1) {
+                let rez = {}
+                rez[origin[0]] = false
+                return rez
+            } else {
+                let rez = {}
+                origin.forEach(function(e) {
+                    let detach = e.split(':')
+                    detach.forEach(function(e, i) {
+                        detach[i] = e.trim()
+                    })
+                    rez[detach[0]] = detach[1]
+                })
+                return (rez)
+            }
+        }
         if (!al.lang.hasOwnProperty(l)) {
             if (l == "default") {
                 l = al.lang.default
@@ -37,11 +60,27 @@ const al = {
             })
         }
         if (mode === al.mode.REPLACE) {
+            document.querySelectorAll('[al-aplto]').forEach(function(e) {
+                let applyTo = e.getAttribute('al-aplto')
+                let applies = getApplies(e, applyTo)
+                if (applies[Object.keys(applies)[0]] !== false && applies[Object.keys(applies)[0]] !== void 0) {
+                    Object.keys(applies).forEach(function(i) {
+                        let z = new RegExp(applies[i], "gi")
+                        e.setAttribute(i, e.getAttribute(i).replace(z, al.lang[l][applies[i]]))
+                    })
+                }
+            })
             for (var i = 0; i < text.length; i++) {
+
                 document.querySelectorAll('[al]').forEach(function(e) {
                     let z = new RegExp(text[i], "gi")
                     let applyTo = e.getAttribute('al-aplto')
                     if (applyTo !== null && applyTo !== void 0) {
+                        let applies = getApplies(e, applyTo)
+                        let appliesI = Object.keys(applies)[0]
+                        if (applies[appliesI] === false) {
+                            e.setAttribute(appliesI, e.getAttribute(appliesI).replace(z, al.lang[l][text[i]]))
+                        }
                         e.setAttribute(applyTo, e.getAttribute(applyTo).replace(z, al.lang[l][text[i]]))
                     } else if (e.tagName.toLowerCase() == "input") {
                         e.value = e.value.replace(z, al.lang[l][text[i]])
@@ -51,11 +90,23 @@ const al = {
             callback()
             return
         }
+        document.querySelectorAll('[al-aplto]').forEach(function(e) {
+            let applyTo = e.getAttribute('al-aplto')
+            let applies = getApplies(e, applyTo)
+            if (applies[Object.keys(applies)[0]] !== false && applies[Object.keys(applies)[0]] !== void 0) {
+                Object.keys(applies).forEach(function(i) {
+                    e.setAttribute(i, al.lang[l][applies[i]])
+                })
+                callback()
+                return
+            }
+        })
         for (var i = 0; i < text.length; i++) {
             document.querySelectorAll('[al="' + text[i] + '"]').forEach(function(e) {
                 let applyTo = e.getAttribute('al-aplto')
                 if (applyTo !== null && applyTo !== void 0) {
-                    e.setAttribute(applyTo, al.lang[l][text[i]])
+                    let applies = getApplies(e, applyTo)
+                    if (applies[Object.keys(applies)[0]] === false) e.setAttribute(Object.keys(applies)[0], al.lang[l][text[i]])
                 } else if (e.tagName.toLowerCase() == "input") {
                     e.value = al.lang[l][text[i]]
                 } else {
@@ -143,7 +194,7 @@ const al = {
             al._(arr, i + 1, cb, isYaml)
         })
     },
-    ver: [13, "1.4.2"],
+    ver: [14, "1.4.3"],
     mode: {
         HTML: 0,
         TEXT: 1,
