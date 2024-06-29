@@ -7,7 +7,7 @@ Web i18n JS Lib
 
 ## How to Use
 
-- See **Codes/index.html** & Release(Update Log)
+- See **Codes/index.html** & Release(Changelog)
 - **js-yaml** needs to import when necessary
 
 ## Third-party Lib
