@@ -1,6 +1,6 @@
 /**
  * AutoLang Lightweight i18n
- * VERSION 1.4.3
+ * VERSION 1.4.4
  * LICENSE MIT
  * 
  * https://github.com/TheChuan1503/AutoLang/
