@@ -66,7 +66,7 @@ const al = {
                 if (applies[Object.keys(applies)[0]] !== false && applies[Object.keys(applies)[0]] !== void 0) {
                     Object.keys(applies).forEach(function(i) {
                         let z = new RegExp(applies[i], "gi")
-                        e.setAttribute(i, e.getAttribute(i).replace(z, al.lang[l][applies[i]]))
+                        al._setAttr(e,i, al._getAttr(e,i).replace(z, al.lang[l][applies[i]]))
                     })
                 }
             })
@@ -79,9 +79,9 @@ const al = {
                         let applies = getApplies(e, applyTo)
                         let appliesI = Object.keys(applies)[0]
                         if (applies[appliesI] === false) {
-                            e.setAttribute(appliesI, e.getAttribute(appliesI).replace(z, al.lang[l][text[i]]))
+                            al._setAttr(e,appliesI, al._getAttr(e,appliesI).replace(z, al.lang[l][text[i]]))
                         }
-                        e.setAttribute(applyTo, e.getAttribute(applyTo).replace(z, al.lang[l][text[i]]))
+                        al._setAttr(e,applyTo, al._getAttr(e,applyTo).replace(z, al.lang[l][text[i]]))
                     } else if (e.tagName.toLowerCase() == "input") {
                         e.value = e.value.replace(z, al.lang[l][text[i]])
                     } else e.innerHTML = e.innerHTML.replace(z, al.lang[l][text[i]])
@@ -95,7 +95,7 @@ const al = {
             let applies = getApplies(e, applyTo)
             if (applies[Object.keys(applies)[0]] !== false && applies[Object.keys(applies)[0]] !== void 0) {
                 Object.keys(applies).forEach(function(i) {
-                    e.setAttribute(i, al.lang[l][applies[i]])
+                    al._setAttr(e, i, al.lang[l][applies[i]])
                 })
                 callback()
                 return
@@ -106,7 +106,7 @@ const al = {
                 let applyTo = e.getAttribute('al-aplto')
                 if (applyTo !== null && applyTo !== void 0) {
                     let applies = getApplies(e, applyTo)
-                    if (applies[Object.keys(applies)[0]] === false) e.setAttribute(Object.keys(applies)[0], al.lang[l][text[i]])
+                    if (applies[Object.keys(applies)[0]] === false) al._setAttr(e,Object.keys(applies)[0], al.lang[l][text[i]])
                 } else if (e.tagName.toLowerCase() == "input") {
                     e.value = al.lang[l][text[i]]
                 } else {
@@ -194,7 +194,15 @@ const al = {
             al._(arr, i + 1, cb, isYaml)
         })
     },
-    ver: [14, "1.4.3"],
+    _setAttr:function(e,key,value){
+        e[key]=value
+        e.setAttribute(key,value)
+    },
+    _getAttr:function(e,key){
+        if(e[key]!==void 0) return e[key]
+        return e.getAttribute(key)
+    },
+    ver: [15, "1.4.4"],
     mode: {
         HTML: 0,
         TEXT: 1,
