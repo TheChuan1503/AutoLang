@@ -20,7 +20,7 @@ const al = {
                     })
                     rez[detach[0]] = detach[1]
                 })
-                return (rez)
+                return rez
             }
         }
         if (!al.lang.hasOwnProperty(l)) {
@@ -71,7 +71,6 @@ const al = {
                 }
             })
             for (var i = 0; i < text.length; i++) {
-
                 document.querySelectorAll('[al]').forEach(function(e) {
                     let z = new RegExp(text[i], "gi")
                     let applyTo = e.getAttribute('al-aplto')
@@ -122,8 +121,12 @@ const al = {
         }
         callback()
     },
+    setLangPropPath: function(path) {
+        if (!path.endsWith("/")) path += "/"
+        this.langPropPath = path
+    },
     setLangProp: function(obj, cb = function() {}, attr = {}) {
-        if (obj instanceof Array) {
+        if (Array.isArray(obj)) {
             if (attr.url == true && (typeof obj[0]) == "string") {
                 this._(obj, 0, function(r) {
                     al.setLangProp(r, cb, attr)
@@ -179,7 +182,7 @@ const al = {
             this._p = []
             return
         }
-        this.httpGet(arr[i], function(r) {
+        this.httpGet(this.langPropPath + arr[i], function(r) {
             if (isYaml == true) {
                 al._p.push(jsyaml.load(r))
             } else if (isYaml == false) {
@@ -194,15 +197,16 @@ const al = {
             al._(arr, i + 1, cb, isYaml)
         })
     },
-    _setAttr:function(e,key,value){
-        e[key]=value
-        e.setAttribute(key,value)
+    _setAttr: function(e, key, value) {
+        e[key] = value
+        e.setAttribute(key, value)
     },
-    _getAttr:function(e,key){
-        if(e[key]!==void 0) return e[key]
+    _getAttr: function(e, key) {
+        if (e[key] !== void 0) return e[key]
         return e.getAttribute(key)
     },
-    ver: [15, "1.4.4"],
+    langPropPath: "",
+    ver: [16, "1.4.5"],
     mode: {
         HTML: 0,
         TEXT: 1,
