@@ -84,38 +84,39 @@ const al = {
     setLangPropPath(path) {
         this.langPropPath = path;
     },
-    current(obj, attr = {}) {
-        const userLang = this.getUserLang();
+    current(obj, attr = {}, l, callback = () => {}) {
+        this.lang.available = obj;
+        const userLang = this.getUserLang(l);
         const defaultLang = this.lang.default;
         if (obj.indexOf(userLang) == -1) {
-            this.setLangProp([defaultLang], void 0, attr);
+            this.setLangProp([defaultLang], callback, attr);
         } else {
-            this.setLangProp(defaultLang == userLang ? [userLang] : [defaultLang, userLang], void 0, attr);
+            this.setLangProp(defaultLang == userLang ? [userLang] : [defaultLang, userLang], callback, attr);
         }
     },
-    setLangProp(obj, cb = () => {}, attr = {}) {
+    setLangProp(obj, callback = () => {}, attr = {}) {
         if (Array.isArray(obj)) {
             if (attr.url == true && typeof obj[0] == "string") {
                 this._(obj, 0, (r) => {
-                    this.setLangProp(r, cb, attr);
+                    this.setLangProp(r, callback, attr);
                 }, attr.yaml);
             } else {
                 obj.forEach(e => {
                     this.lang[e.language] = e.data;
                 });
-                cb(this.lang);
+                callback(this.lang);
             }
         } else if (typeof obj == "object") {
             if (obj.default === void 0) {
                 obj.default = this.lang.default;
             }
             this.lang = obj;
-            cb(this.lang);
+            callback(this.lang);
         } else {
             try {
-                this.setLangProp(jsyaml.load(obj), cb, attr);
+                this.setLangProp(jsyaml.load(obj), callback, attr);
             } catch {
-                this.setLangProp(JSON.parse(obj), cb, attr);
+                this.setLangProp(JSON.parse(obj), callback, attr);
             }
         }
     },
@@ -127,7 +128,7 @@ const al = {
     },
     getUserLang(l) {
         if (!l) l = navigator.language;
-        if (!this.lang.hasOwnProperty(l)) {
+        if (this.lang.available.indexOf(l) == -1) {
             if (l == "default") {
                 l = this.lang.default;
             } else {
@@ -160,15 +161,15 @@ const al = {
         xhttp.send();
     },
     _p: [],
-    _(arr, i = 0, cb, isYaml) {
+    _(arr, i = 0, callback, isYaml) {
         if (i >= arr.length) {
-            cb(this._p);
+            callback(this._p);
             this._p = [];
             return;
         }
         this.httpGet(this.langPropPath.replace(/%%/g, arr[i]), (r) => {
             this._p.push(isYaml == true ? jsyaml.load(r) : JSON.parse(r));
-            this._(arr, i + 1, cb, isYaml);
+            this._(arr, i + 1, callback, isYaml);
         });
     },
     _setAttr(e, key, value) {
@@ -179,7 +180,7 @@ const al = {
         return e[key] !== void 0 ? e[key] : e.getAttribute(key);
     },
     langPropPath: "",
-    ver: [17, "1.5.0"],
+    ver: [18, "1.5.1"],
     mode: {
         HTML: 0,
         TEXT: 1,
